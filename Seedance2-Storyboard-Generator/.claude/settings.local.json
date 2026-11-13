@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(\"D:/Seedance2-Storyboard-Generator-main/写剧本和分镜/武松项目/武松打虎_剧本.md\":*)",
+      "Bash(\"D:/Seedance2-Storyboard-Generator-main/写剧本和分镜/武松项目/武松打虎_E04_分镜.md\":*)"
+    ]
+  }
+}
