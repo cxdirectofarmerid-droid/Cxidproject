@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "remotion studio",
     "render": "remotion render src/index.ts TestVideo out/test.mp4",
-    "upgrade": "remotion upgrade"
+    "upgrade": "remotion upgrade",
+    "export:quicksight": "node automation/quicksight-export.mjs"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.543",

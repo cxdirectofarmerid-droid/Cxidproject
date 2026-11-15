@@ -1,3 +1,9 @@
 node_modules
 out
 .DS_Store
+
+# QuickSight automation
+automation/.env
+automation/auth/
+automation/downloads/
+automation/screenshots/
