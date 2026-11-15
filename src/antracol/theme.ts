@@ -65,6 +65,6 @@ export const asset = (name: string) => (hasAsset(name) ? staticFile(name) : null
 export const AVATAR = {
   videoAspect: 9 / 16,
   faceX: 0.5,
-  faceY: 0.34,
-  zoom: 1.9,
+  faceY: 0.39,
+  zoom: 1.05,
 };
