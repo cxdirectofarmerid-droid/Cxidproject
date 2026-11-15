@@ -43,6 +43,7 @@ export const S = {
 export const ASSET = {
   vo: "vo_rr_mila.mp3",
   avatar: "tania_avatar.mp4",
+  avatarStill: "tania_still.png",
   logo: "logo_farmrise_bayer_white.png",
   pack: "antracol_new_2026_500gr.png",
   qr: "qr_farmrise.png",

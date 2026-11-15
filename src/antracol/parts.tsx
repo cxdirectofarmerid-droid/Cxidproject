@@ -73,11 +73,22 @@ export const AvatarWindow: React.FC<{
   opacity?: number;
   dx?: number;
   dy?: number;
-}> = ({ cx, cy, size, opacity = 1, dx = 0, dy = 0 }) => {
+  /** Frame klip yang dilewati di awal (untuk memotong bagian VO). */
+  trimBefore?: number;
+  /** Pakai potret diam (tania_still.png), mis. untuk banner tanpa VO. */
+  still?: boolean;
+}> = ({ cx, cy, size, opacity = 1, dx = 0, dy = 0, trimBefore = 0, still = false }) => {
   const inner = size * 0.86;
-  const src = asset(ASSET.avatar);
+  const src = asset(still ? ASSET.avatarStill : ASSET.avatar);
   const w = inner * AVATAR.zoom;
   const h = w / AVATAR.videoAspect;
+  const mediaStyle: React.CSSProperties = {
+    position: "absolute",
+    width: w,
+    height: h,
+    left: inner / 2 - AVATAR.faceX * w,
+    top: inner / 2 - AVATAR.faceY * h,
+  };
   return (
     <div
       style={{
@@ -92,18 +103,10 @@ export const AvatarWindow: React.FC<{
         background: C.darkGreen,
       }}
     >
-      {src ? (
-        <OffthreadVideo
-          src={src}
-          muted
-          style={{
-            position: "absolute",
-            width: w,
-            height: h,
-            left: inner / 2 - AVATAR.faceX * w,
-            top: inner / 2 - AVATAR.faceY * h,
-          }}
-        />
+      {src && still ? (
+        <Img src={src} style={mediaStyle} />
+      ) : src ? (
+        <OffthreadVideo src={src} muted trimBefore={trimBefore || undefined} style={mediaStyle} />
       ) : (
         <Placeholder label="TANIA avatar" sub="public/tania_avatar.mp4" dark />
       )}
