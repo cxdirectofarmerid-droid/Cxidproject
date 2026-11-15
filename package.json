@@ -4,11 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "remotion studio",
-    "render": "remotion render src/index.ts TestVideo out/test.mp4",
-    "upgrade": "remotion upgrade"
+    "render": "remotion render src/index.ts AntracolStory out/FR_Antracol-B3_Motion-Story_1080x1920_v1.mp4 --codec h264 --audio-codec aac",
+    "upgrade": "remotion upgrade",
+    "render:test": "remotion render src/index.ts TestVideo out/test.mp4"
   },
   "dependencies": {
+    "@fontsource/montserrat": "^5.3.0",
     "@remotion/cli": "^4.0.543",
+    "@remotion/fonts": "^4.0.543",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "remotion": "^4.0.543"
