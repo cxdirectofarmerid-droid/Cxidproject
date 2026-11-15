@@ -13,8 +13,8 @@ export const RemotionRoot: React.FC = () => {
         fps={FPS}
         width={WIDTH}
         height={HEIGHT}
-        // bumperFrames: isi durasi Bumper Outro.mp4 (frame @30fps) bila file sudah ada di public/
-        defaultProps={{ bumperFrames: 0 } satisfies StoryProps}
+        // bumperFrames: durasi Bumper Outro.mp4 (5 detik @30fps)
+        defaultProps={{ bumperFrames: 150 } satisfies StoryProps}
         calculateMetadata={({ props }) => ({
           durationInFrames: STORY_FRAMES + Math.max(0, props.bumperFrames),
         })}

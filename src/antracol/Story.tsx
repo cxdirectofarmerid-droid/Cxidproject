@@ -16,6 +16,9 @@ import { ASSET, C, FONT, FONT_TAGLINE, MARGIN_X, S, STORY_FRAMES, WIDTH, asset }
 
 export type StoryProps = { bumperFrames: number };
 
+/** Warna latar Bumper Outro.mp4 (diambil dari videonya). */
+const BUMPER_BG = "#33A225";
+
 /** Nilai 0..1 garis scan di jendela [a,b]; null di luar. */
 const scanAt = (f: number, a: number, b: number) => (f >= a && f <= b ? (f - a) / (b - a) : null);
 
@@ -32,12 +35,21 @@ export const AntracolStory: React.FC<StoryProps> = ({ bumperFrames }) => {
       {jingle ? (
         <Audio
           src={jingle}
-          volume={(f) => (f < STORY_FRAMES - 6 ? 0.14 : tw(f, STORY_FRAMES - 6, STORY_FRAMES + 6, 0.14, 1))}
+          // di bawah VO (±−22 LUFS), naik penuh saat bumper, fade out di akhir
+          volume={(f) =>
+            Math.min(
+              f < STORY_FRAMES - 6 ? 0.14 : tw(f, STORY_FRAMES - 6, STORY_FRAMES + 6, 0.14, 1),
+              tw(f, STORY_FRAMES + bumperFrames - 20, STORY_FRAMES + bumperFrames, 1, 0, easeIn),
+            )
+          }
         />
       ) : null}
       {bumper && bumperFrames > 0 ? (
         <Sequence from={STORY_FRAMES} durationInFrames={bumperFrames}>
-          <OffthreadVideo src={bumper} />
+          {/* Bumper 16:9, latar hijaunya diteruskan ke seluruh frame 9:16 */}
+          <AbsoluteFill style={{ background: BUMPER_BG, justifyContent: "center" }}>
+            <OffthreadVideo src={bumper} muted style={{ width: WIDTH }} />
+          </AbsoluteFill>
         </Sequence>
       ) : null}
     </AbsoluteFill>
@@ -306,8 +318,8 @@ const Steps: React.FC<{ f: number }> = ({ f }) => {
               >
                 {i + 1}
               </div>
-              <FeatureIcon name={s.icon} size={72} />
-              <div style={{ color: C.white, fontWeight: 700, fontSize: 44, lineHeight: 1.15, width: 440 }}>
+              <FeatureIcon name={s.icon} size={68} />
+              <div style={{ color: C.white, fontWeight: 700, fontSize: 44, lineHeight: 1.15, width: 400 }}>
                 {s.text}
               </div>
             </div>
@@ -338,8 +350,8 @@ const Steps: React.FC<{ f: number }> = ({ f }) => {
       {f >= 395 ? (
         <Reticle
           cx={865}
-          cy={880}
-          size={150}
+          cy={688}
+          size={210}
           thickness={7}
           spread={tw(f, 395, 403, 120, 0, easeBack)}
           scan={scanAt(f, 401, 417)}
