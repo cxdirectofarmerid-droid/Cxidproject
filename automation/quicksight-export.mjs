@@ -127,9 +127,9 @@ async function signIn(page) {
     await page.getByRole('button', { name: /next|continue/i }).first().click();
   }
 
-  await page.locator('#username-input, input[name="username"]').first().fill(QS_USERNAME);
-  const next = page.getByRole('button', { name: /next|continue/i }).first();
-  if (await next.isVisible().catch(() => false)) await next.click();
+  // Confirmed on the live page: "Sign in to shpf-in-farmrise-analytics" -> Username -> Next.
+  await page.locator('#username-input').fill(QS_USERNAME);
+  await page.locator('#username-submit-button').click();
 
   await page.locator('#password-input, input[type="password"]').first().fill(QS_PASSWORD);
   await page.getByRole('button', { name: /sign in/i }).first().click();
