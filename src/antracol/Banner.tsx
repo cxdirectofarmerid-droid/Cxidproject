@@ -52,15 +52,15 @@ export const AntracolBanner: React.FC = () => {
       {f >= 62 ? <Reticle cx={RET.cx} cy={RET.cy} size={RET.size} spread={spread} scan={scan} thickness={8} /> : null}
       {f >= 84 ? (
         <>
-          <Chip x={RET.cx - RET.size / 2 - 90} y={RET.cy + 52} label="Bayer Coins" bg={C.lime} scale={pop(f, 84)} fontSize={28} />
+          <Chip x={RET.cx - RET.size / 2 - 90} y={RET.cy + 52} label="Bayer Coins" bg={C.lime} scale={pop(f, 84)} fontSize={25} />
           <Chip
             x={RET.cx - RET.size / 2 - 90}
-            y={RET.cy + 116}
+            y={RET.cy + 108}
             label="Terverifikasi"
             bg={C.white}
             scale={pop(f, 90)}
             check={tw(f, 94, 106, 0, 1)}
-            fontSize={28}
+            fontSize={25}
           />
         </>
       ) : null}
@@ -70,14 +70,14 @@ export const AntracolBanner: React.FC = () => {
         {logo ? <Img src={logo} style={{ height: 44 }} /> : null}
       </div>
       <div style={{ position: "absolute", left: 60, top: 128 }}>
-        <div style={{ color: C.white, fontWeight: 300, fontSize: 46, lineHeight: 1.1 }}>
+        <div style={{ color: C.white, fontWeight: 300, fontSize: 40, lineHeight: 1.1 }}>
           <Words text="Pastikan keasliannya," start={0} gap={4} mode="mask" />
         </div>
         <div
           style={{
             color: C.lime,
             fontWeight: 900,
-            fontSize: 62,
+            fontSize: 56,
             lineHeight: 1.05,
             marginTop: 6,
             opacity: tw(f, 14, 22, 0, 1),
@@ -126,8 +126,8 @@ export const AntracolBanner: React.FC = () => {
           background: C.farmriseGreen,
           color: C.black,
           fontWeight: 900,
-          fontSize: 34,
-          padding: "18px 34px",
+          fontSize: 30,
+          padding: "14px 28px",
           borderRadius: 999,
           display: "flex",
           alignItems: "center",

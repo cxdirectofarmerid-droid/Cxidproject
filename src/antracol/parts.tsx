@@ -1,7 +1,7 @@
 import React from "react";
-import { Img, OffthreadVideo, useCurrentFrame } from "remotion";
+import { Audio, Img, OffthreadVideo, Sequence, staticFile, useCurrentFrame } from "remotion";
 import { tw, easeOut } from "./anim";
-import { ASSET, AVATAR, C, FONT, asset } from "./theme";
+import { ASSET, AVATAR, C, FONT, SfxCue, asset } from "./theme";
 
 /* ---------- Bidikan scan (4 sudut + garis scan) ---------- */
 
@@ -311,3 +311,15 @@ export const FeatureIcon: React.FC<{ name: string; size: number }> = ({ name, si
   const src = asset(name);
   return src ? <Img src={src} style={{ width: size, height: size, objectFit: "contain" }} /> : null;
 };
+
+/* ---------- SFX ---------- */
+
+export const Sfx: React.FC<{ cues: SfxCue[] }> = ({ cues }) => (
+  <>
+    {cues.map((c, i) => (
+      <Sequence key={i} from={c.at} durationInFrames={30} layout="none">
+        <Audio src={staticFile(`sfx/${c.sfx}.wav`)} volume={c.volume ?? 1} />
+      </Sequence>
+    ))}
+  </>
+);

@@ -41,7 +41,8 @@ export const S = {
  * selain itu tampil placeholder berlabel, supaya render tetap jalan.
  */
 export const ASSET = {
-  vo: "vo_rr_mila.mp3",
+  /** VO RR Mila, dinormalkan ke −14 LUFS (sumber asli: vo_rr_mila.mp3). */
+  vo: "vo_rr_mila_-14lufs.mp3",
   avatar: "tania_avatar.mp4",
   avatarStill: "tania_still.png",
   logo: "logo_farmrise_bayer_white.png",
@@ -50,7 +51,8 @@ export const ASSET = {
   iconFarmrise: "icon_farmrise.png",
   iconVerifikasi: "icon_verifikasi_produk_bayer.png",
   iconCoins: "icon_bayer_coins.png",
-  jingle: "jingle_farmrise.mp3",
+  /** Jingle 40 dtk pertama, −14 LUFS; diputar −8 dB (±−22 LUFS) di bawah VO. */
+  jingle: "jingle_farmrise_-14lufs.mp3",
   bumper: "bumper_outro.mp4",
 };
 
@@ -69,3 +71,9 @@ export const AVATAR = {
   faceY: 0.39,
   zoom: 1.05,
 };
+
+/** Volume jingle di bawah VO (−8 dB → ±−22 LUFS) dan saat bumper (penuh, −14 LUFS). */
+export const JINGLE_BED = 0.4;
+
+export type SfxName = "click" | "beep" | "beep_success" | "cring" | "pop";
+export type SfxCue = { at: number; sfx: SfxName; volume?: number };

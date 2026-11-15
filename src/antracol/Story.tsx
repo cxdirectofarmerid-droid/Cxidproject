@@ -8,16 +8,32 @@ import {
   FeatureIcon,
   Logo,
   Placeholder,
+  Sfx,
   Reticle,
   RewardIcon,
   Words,
 } from "./parts";
-import { ASSET, C, FONT, FONT_TAGLINE, MARGIN_X, S, STORY_FRAMES, WIDTH, asset } from "./theme";
+import { ASSET, C, FONT, FONT_TAGLINE, JINGLE_BED, MARGIN_X, S, STORY_FRAMES, SfxCue, WIDTH, asset } from "./theme";
 
 export type StoryProps = { bumperFrames: number };
 
 /** Warna latar Bumper Outro.mp4 (diambil dari videonya). */
 const BUMPER_BG = "#33A225";
+
+/** SFX sesuai storyboard (frame master). */
+const STORY_SFX: SfxCue[] = [
+  { at: 6, sfx: "click" }, // bidikan mengunci
+  { at: 10, sfx: "beep", volume: 0.8 }, // garis scan
+  { at: 205, sfx: "cring" }, // "Koinnya." mendarat
+  { at: S.s4 + 10, sfx: "beep_success" }, // lock ulang ke wajah TANIA
+  { at: S.s4 + 18, sfx: "pop", volume: 0.8 }, // chip Bayer Coins
+  { at: S.s4 + 24, sfx: "pop", volume: 0.8 }, // chip Terverifikasi
+  { at: 397, sfx: "click", volume: 0.7 }, // bidikan kecil mengunci kemasan
+  { at: 515, sfx: "cring", volume: 0.45 }, // kartu Pulsa
+  { at: 548, sfx: "cring", volume: 0.45 }, // kartu E-wallet
+  { at: 585, sfx: "cring", volume: 0.45 }, // kartu Voucher
+  { at: S.s7 + 12, sfx: "beep_success", volume: 0.8 }, // QR terkunci
+];
 
 /** Nilai 0..1 garis scan di jendela [a,b]; null di luar. */
 const scanAt = (f: number, a: number, b: number) => (f >= a && f <= b ? (f - a) / (b - a) : null);
@@ -32,13 +48,14 @@ export const AntracolStory: React.FC<StoryProps> = ({ bumperFrames }) => {
         <Master />
       </Sequence>
       {vo ? <Audio src={vo} /> : null}
+      <Sfx cues={STORY_SFX} />
       {jingle ? (
         <Audio
           src={jingle}
           // di bawah VO (±−22 LUFS), naik penuh saat bumper, fade out di akhir
           volume={(f) =>
             Math.min(
-              f < STORY_FRAMES - 6 ? 0.14 : tw(f, STORY_FRAMES - 6, STORY_FRAMES + 6, 0.14, 1),
+              f < STORY_FRAMES - 6 ? JINGLE_BED : tw(f, STORY_FRAMES - 6, STORY_FRAMES + 6, JINGLE_BED, 1),
               tw(f, STORY_FRAMES + bumperFrames - 20, STORY_FRAMES + bumperFrames, 1, 0, easeIn),
             )
           }
@@ -66,11 +83,11 @@ const Master: React.FC = () => {
   ]);
   const cy = kf(f, [
     [0, 980], [S.s2, 980], [S.s2 + 14, 1360], [S.s4, 1360], [S.s4 + 16, 1180],
-    [S.s5, 1180], [S.s5 + 16, 1430], [S.s7, 1430], [S.s7 + 16, 960], [S.s8, 960], [S.s8 + 14, 640],
+    [S.s5, 1180], [S.s5 + 16, 1430], [S.s7, 1430], [S.s7 + 16, 900], [S.s8, 900], [S.s8 + 14, 700],
   ]);
   const size = kf(f, [
     [0, 600], [S.s2, 600], [S.s2 + 14, 400], [S.s4, 400], [S.s4 + 16, 560],
-    [S.s5, 560], [S.s5 + 16, 392], [S.s7, 392], [S.s7 + 16, 520], [S.s8, 520], [S.s8 + 14, 420],
+    [S.s5, 560], [S.s5 + 16, 392], [S.s7, 392], [S.s7 + 16, 480], [S.s8, 480], [S.s8 + 14, 380],
   ]);
   const spread =
     tw(f, 0, 8, 520, 0, easeBack) +
@@ -442,7 +459,7 @@ const Rewards: React.FC<{ f: number }> = ({ f }) => {
 /* ---------------- Scene 7: CTA + QR ---------------- */
 
 const BLOCK = { left: 60, top: 1380, width: 960, height: 290 };
-const QR_SIZE = 236;
+const QR_SIZE = 360; // termasuk quiet zone putih (padding 26); QR padat, jadi dibuat besar
 const QR_IN = S.s7 + 8; // QR diam dari sini sampai S.s8 (> 3 detik)
 
 const Cta: React.FC<{ f: number }> = ({ f }) => {
@@ -451,8 +468,8 @@ const Cta: React.FC<{ f: number }> = ({ f }) => {
   const out = 1 - tw(f, S.s8, S.s8 + 12, 0, 1, easeIn);
   const nudge = f >= 676 && f < 700 ? 14 * Math.abs(Math.sin((Math.PI * (f - 676)) / 12)) : 0;
   const qr = asset(ASSET.qr);
-  const qrLeft = BLOCK.left + BLOCK.width - 30 - QR_SIZE;
-  const qrTop = BLOCK.top + (BLOCK.height - QR_SIZE) / 2;
+  const qrLeft = BLOCK.left + BLOCK.width - 14 - QR_SIZE;
+  const qrTop = BLOCK.top + BLOCK.height - 14 - QR_SIZE; // menjorok ke atas blok
   return (
     <div style={{ opacity: out }}>
       <div
@@ -478,7 +495,7 @@ const Cta: React.FC<{ f: number }> = ({ f }) => {
           width={86}
           height={60}
           viewBox="0 0 86 60"
-          style={{ position: "absolute", left: 510 + nudge, top: 115 }}
+          style={{ position: "absolute", left: 480 + nudge, top: 115 }}
         >
           <path d="M4 30 H70 M50 8 L76 30 L50 52" fill="none" stroke={C.black} strokeWidth={9} strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -492,9 +509,10 @@ const Cta: React.FC<{ f: number }> = ({ f }) => {
               top: qrTop,
               width: QR_SIZE,
               height: QR_SIZE,
-              borderRadius: 20,
+              borderRadius: 18,
               background: C.white,
-              padding: 16,
+              padding: 26,
+              boxShadow: "0 10px 30px #00000040",
               boxSizing: "border-box",
             }}
           >
@@ -507,7 +525,7 @@ const Cta: React.FC<{ f: number }> = ({ f }) => {
           <Reticle
             cx={qrLeft + QR_SIZE / 2}
             cy={qrTop + QR_SIZE / 2}
-            size={QR_SIZE + 26}
+            size={QR_SIZE + 22}
             thickness={7}
             spread={tw(f, QR_IN, QR_IN + 8, 90, 0, easeBack)}
           />
@@ -530,7 +548,7 @@ const Tagline: React.FC<{ f: number }> = ({ f }) => {
     color: C.white,
   };
   return (
-    <div style={{ position: "absolute", top: 960, width: WIDTH, textAlign: "center" }}>
+    <div style={{ position: "absolute", top: 1060, width: WIDTH, textAlign: "center" }}>
       <Words text="Tumbuh Lebih Baik" start={S.s8 + 14} gap={6} style={{ ...style, display: "block" }} />
       <Words text="Bersama FarmRise" start={S.s8 + 32} gap={6} style={{ ...style, display: "block" }} />
     </div>

@@ -2,8 +2,8 @@ import React from "react";
 import { AbsoluteFill, Audio, Img, OffthreadVideo, Sequence, useCurrentFrame } from "remotion";
 import "./fonts";
 import { easeBack, easeIn, easeOut, inOut, kf, pop, tw } from "./anim";
-import { AvatarWindow, Chip, Logo, Placeholder, Reticle, RewardIcon, Words } from "./parts";
-import { ASSET, C, FONT, FONT_TAGLINE, asset } from "./theme";
+import { AvatarWindow, Chip, Logo, Placeholder, Reticle, RewardIcon, Sfx, Words } from "./parts";
+import { ASSET, C, FONT, FONT_TAGLINE, JINGLE_BED, SfxCue, asset } from "./theme";
 
 /**
  * Feed 1080 × 1080. VO sama dengan master tanpa kalimat Scene 5 (langkah):
@@ -27,6 +27,20 @@ const F = {
 const M = 70; // margin
 const BUMPER_BG = "#33A225";
 
+const FEED_SFX: SfxCue[] = [
+  { at: 6, sfx: "click" },
+  { at: 10, sfx: "beep", volume: 0.8 },
+  { at: 205, sfx: "cring" },
+  { at: F.s4 + 10, sfx: "beep_success" },
+  { at: F.s4 + 18, sfx: "pop", volume: 0.8 },
+  { at: F.s4 + 24, sfx: "pop", volume: 0.8 },
+  { at: CUT + 6, sfx: "click", volume: 0.7 }, // lock ulang di titik potong
+  { at: 515 - SHIFT, sfx: "cring", volume: 0.45 },
+  { at: 548 - SHIFT, sfx: "cring", volume: 0.45 },
+  { at: 585 - SHIFT, sfx: "cring", volume: 0.45 },
+  { at: F.s7 + 12, sfx: "beep_success", volume: 0.8 },
+];
+
 export type FeedProps = { bumperFrames: number };
 
 export const AntracolFeed: React.FC<FeedProps> = ({ bumperFrames }) => {
@@ -48,12 +62,13 @@ export const AntracolFeed: React.FC<FeedProps> = ({ bumperFrames }) => {
           </Sequence>
         </>
       ) : null}
+      <Sfx cues={FEED_SFX} />
       {jingle ? (
         <Audio
           src={jingle}
           volume={(f) =>
             Math.min(
-              f < FEED_FRAMES - 6 ? 0.14 : tw(f, FEED_FRAMES - 6, FEED_FRAMES + 6, 0.14, 1),
+              f < FEED_FRAMES - 6 ? JINGLE_BED : tw(f, FEED_FRAMES - 6, FEED_FRAMES + 6, JINGLE_BED, 1),
               tw(f, FEED_FRAMES + bumperFrames - 20, FEED_FRAMES + bumperFrames, 1, 0, easeIn),
             )
           }
@@ -80,11 +95,11 @@ const FeedMaster: React.FC = () => {
   ]);
   const cy = kf(f, [
     [0, 760], [F.s2, 760], [F.s2 + 14, 820], [F.s4, 820], [F.s4 + 16, 770],
-    [F.s6, 770], [F.s6 + 12, 310], [F.s8, 310], [F.s8 + 14, 380],
+    [F.s6, 770], [F.s6 + 12, 310], [F.s8, 310], [F.s8 + 14, 400],
   ]);
   const size = kf(f, [
     [0, 400], [F.s2, 400], [F.s2 + 14, 340], [F.s4, 340], [F.s4 + 16, 460],
-    [F.s6, 460], [F.s6 + 12, 250], [F.s8, 250], [F.s8 + 14, 300],
+    [F.s6, 460], [F.s6 + 12, 250], [F.s8, 250], [F.s8 + 14, 260],
   ]);
   const spread =
     tw(f, 0, 8, 420, 0, easeBack) +
@@ -256,7 +271,7 @@ const CARDS = [
   { kind: "wallet" as const, title: "E-wallet", sub: "GoPay & OVO", start: 548 - SHIFT },
   { kind: "voucher" as const, title: "Voucher belanja", sub: "Alfamart & Indomaret", start: 585 - SHIFT },
 ];
-const CARD = { top: 520, w: 300, h: 280, gap: 30 };
+const CARD = { top: 500, w: 300, h: 220, gap: 30 };
 const CHIP_POS = { x: M, y: 190 };
 
 const Rewards: React.FC<{ f: number }> = ({ f }) => {
@@ -308,7 +323,7 @@ const Rewards: React.FC<{ f: number }> = ({ f }) => {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: 14,
+                gap: 8,
                 padding: "0 18px",
                 boxSizing: "border-box",
                 textAlign: "center",
@@ -318,7 +333,7 @@ const Rewards: React.FC<{ f: number }> = ({ f }) => {
                 boxShadow: "0 12px 30px #00000033",
               }}
             >
-              <RewardIcon kind={c.kind} size={84} />
+              <RewardIcon kind={c.kind} size={64} />
               <div style={{ fontWeight: 900, fontSize: 38, lineHeight: 1.1 }}>{c.title}</div>
               {c.sub ? <div style={{ fontWeight: 600, fontSize: 28, lineHeight: 1.2 }}>{c.sub}</div> : null}
             </div>
@@ -330,8 +345,8 @@ const Rewards: React.FC<{ f: number }> = ({ f }) => {
 };
 
 /* Strip CTA ±180 px di bawah. */
-const STRIP = { left: 40, top: 840, width: 1000, height: 190 };
-const QR_SIZE = 166;
+const STRIP = { left: 40, top: 826, width: 1000, height: 214 };
+const QR_SIZE = 290; // termasuk quiet zone putih (padding 22); QR padat, jadi dibuat besar
 const QR_IN = F.s7 + 8;
 
 const Cta: React.FC<{ f: number }> = ({ f }) => {
@@ -340,8 +355,8 @@ const Cta: React.FC<{ f: number }> = ({ f }) => {
   const out = 1 - tw(f, F.s8, F.s8 + 12, 0, 1, easeIn);
   const nudge = f >= F.s7 + 30 && f < F.s7 + 54 ? 12 * Math.abs(Math.sin((Math.PI * (f - F.s7 - 30)) / 12)) : 0;
   const qr = asset(ASSET.qr);
-  const qrLeft = STRIP.left + STRIP.width - 14 - QR_SIZE;
-  const qrTop = STRIP.top + (STRIP.height - QR_SIZE) / 2;
+  const qrLeft = STRIP.left + STRIP.width - 8 - QR_SIZE;
+  const qrTop = STRIP.top + STRIP.height - QR_SIZE; // menjorok ke atas strip
   return (
     <div style={{ opacity: out }}>
       <div
@@ -352,16 +367,20 @@ const Cta: React.FC<{ f: number }> = ({ f }) => {
           background: C.farmriseGreen,
           transform: `translateY(${slide}px)`,
           color: C.black,
-          padding: "30px 0 0 40px",
+          padding: "26px 0 0 40px",
           boxSizing: "border-box",
         }}
       >
-        <div style={{ fontWeight: 900, fontSize: 56, lineHeight: 1, letterSpacing: -1 }}>Scan & unduh sekarang!</div>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 22, marginTop: 22 }}>
+        <div style={{ fontWeight: 900, fontSize: 54, lineHeight: 1, letterSpacing: -1 }}>
+          Scan & unduh
+          <br />
+          sekarang!
+        </div>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 22, marginTop: 16 }}>
           <span style={{ fontWeight: 700, fontSize: 30 }}>Cek link di bio</span>
           <span style={{ fontWeight: 600, fontSize: 22 }}>S&K berlaku</span>
         </div>
-        <svg width={72} height={50} viewBox="0 0 86 60" style={{ position: "absolute", left: 700 + nudge, top: 102 }}>
+        <svg width={72} height={50} viewBox="0 0 86 60" style={{ position: "absolute", left: 470 + nudge, top: 70 }}>
           <path d="M4 30 H70 M50 8 L76 30 L50 52" fill="none" stroke={C.black} strokeWidth={9} strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
@@ -374,9 +393,10 @@ const Cta: React.FC<{ f: number }> = ({ f }) => {
               top: qrTop,
               width: QR_SIZE,
               height: QR_SIZE,
-              borderRadius: 16,
+              borderRadius: 14,
               background: C.white,
-              padding: 10,
+              padding: 22,
+              boxShadow: "0 10px 30px #00000040",
               boxSizing: "border-box",
             }}
           >
@@ -406,7 +426,7 @@ const Tagline: React.FC<{ f: number }> = ({ f }) => {
     color: C.white,
   };
   return (
-    <div style={{ position: "absolute", top: 600, width: FEED.width, textAlign: "center" }}>
+    <div style={{ position: "absolute", top: 650, width: FEED.width, textAlign: "center" }}>
       <Words text="Tumbuh Lebih Baik" start={F.s8 + 14} gap={6} style={{ ...style, display: "block" }} />
       <Words text="Bersama FarmRise" start={F.s8 + 32} gap={6} style={{ ...style, display: "block" }} />
     </div>

@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "remotion studio",
-    "render": "remotion render src/index.ts AntracolStory out/FR_Antracol-B3_Motion-Story_1080x1920_v1.mp4 --codec h264 --audio-codec aac",
+    "render": "remotion render src/index.ts AntracolStory out/FR_Antracol-B3_Motion-Story_1080x1920_v1.mp4 --codec h264 --color-space bt709 --crf 15 --audio-codec aac",
     "upgrade": "remotion upgrade",
     "render:test": "remotion render src/index.ts TestVideo out/test.mp4",
-    "render:feed": "remotion render src/index.ts AntracolFeed out/FR_Antracol-B3_Motion-Feed_1080x1080_v1.mp4 --codec h264 --audio-codec aac",
-    "render:banner": "remotion render src/index.ts AntracolBanner out/FR_Antracol-B3_Motion-Banner_1200x628_v1.mp4 --codec h264 --muted",
+    "render:feed": "remotion render src/index.ts AntracolFeed out/FR_Antracol-B3_Motion-Feed_1080x1080_v1.mp4 --codec h264 --color-space bt709 --crf 15 --audio-codec aac",
+    "render:banner": "remotion render src/index.ts AntracolBanner out/FR_Antracol-B3_Motion-Banner_1200x628_v1.mp4 --codec h264 --color-space bt709 --crf 15 --muted",
     "render:banner-gif": "remotion render src/index.ts AntracolBanner out/FR_Antracol-B3_Motion-Banner_600x314_v1.gif --codec gif --scale 0.5 --every-nth-frame 3 --number-of-gif-loops 0",
     "render:all": "npm run render && npm run render:feed && npm run render:banner && npm run render:banner-gif"
   },
