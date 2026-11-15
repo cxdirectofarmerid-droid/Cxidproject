@@ -1,0 +1,52 @@
+name: QuickSight daily export
+
+on:
+  schedule:
+    # 00:15 UTC = 07:15 WIB (Jakarta). Change the time here; cron is always UTC.
+    - cron: '15 0 * * *'
+  workflow_dispatch: # "Run workflow" button for manual runs
+
+concurrency:
+  group: quicksight-export
+  cancel-in-progress: false
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Export "User detail" from QuickSight
+        env:
+          QS_ACCOUNT: shpf-in-farmrise-analytics
+          QS_USERNAME: ${{ secrets.QS_USERNAME }}
+          QS_PASSWORD: ${{ secrets.QS_PASSWORD }}
+        run: npm run export:quicksight
+
+      - name: Upload Excel to Google Drive
+        env:
+          DRIVE_UPLOAD_URL: ${{ secrets.DRIVE_UPLOAD_URL }}
+          DRIVE_UPLOAD_TOKEN: ${{ secrets.DRIVE_UPLOAD_TOKEN }}
+        run: node automation/upload-to-drive.mjs automation/downloads/*.xlsx
+
+      # This repo is public, so failure screenshots (which may show dashboard data)
+      # go to the private Drive folder, never to GitHub artifacts.
+      - name: Upload failure screenshot to Google Drive
+        if: failure()
+        env:
+          DRIVE_UPLOAD_URL: ${{ secrets.DRIVE_UPLOAD_URL }}
+          DRIVE_UPLOAD_TOKEN: ${{ secrets.DRIVE_UPLOAD_TOKEN }}
+        run: node automation/upload-to-drive.mjs automation/screenshots/*.png || true
